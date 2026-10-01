@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Windows Forms (.NET) con C#: controles básicos</title>
+<style>
+:root{--bg:#f3f4f8;--panel:#fff;--ink:#1b1f2a;--mute:#566074;--line:#cfd4e0;--accent:#0b57d0;--title:#1f3a68;--code:#14192b;--codeink:#e6eaf5;--kw:#7fb2ff;--str:#f2b27a;--cm:#7f8aa6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10131c;--panel:#181c28;--ink:#e7eaf3;--mute:#9aa4bb;--line:#2b3247;--accent:#7fb2ff;--title:#2a4a82}}
+:root[data-theme="dark"]{--bg:#10131c;--panel:#181c28;--ink:#e7eaf3;--mute:#9aa4bb;--line:#2b3247;--accent:#7fb2ff;--title:#2a4a82}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Segoe UI",system-ui,sans-serif}
+.wrap{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;max-width:1080px;margin:0 auto;padding:20px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;max-height:100vh;overflow:auto;padding:12px 0}
+nav b{display:block;margin-bottom:8px}
+nav a{display:block;padding:4px 10px;color:var(--mute);text-decoration:none;border-left:2px solid var(--line);font-size:14px}
+nav a:hover,nav a:focus-visible{color:var(--accent);border-color:var(--accent);outline:none}
+main{min-width:0}
+h1{font-size:2rem;line-height:1.2;margin:.2em 0}
+h2{font-size:1.4rem;margin:0}
+h3{font-size:1.05rem;margin:1.2em 0 .3em}
+section{background:var(--panel);border:1px solid var(--line);border-radius:6px;margin:0 0 22px;overflow:hidden}
+section>header{background:var(--title);color:#fff;padding:9px 16px;display:flex;align-items:center;gap:10px}
+section>header:before{content:"";width:10px;height:10px;border:2px solid #fff;border-radius:1px;opacity:.8}
+.body{padding:4px 18px 16px}
+p{max-width:72ch}
+.lead{color:var(--mute);font-size:1.1rem;max-width:62ch}
+pre{background:var(--code);color:var(--codeink);padding:14px;border-radius:4px;overflow-x:auto;font:13.5px/1.55 Consolas,"Cascadia Mono",monospace;margin:10px 0}
+code{font-family:Consolas,"Cascadia Mono",monospace;font-size:.92em;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 5px;border-radius:3px}
+pre code{background:none;padding:0;font-size:inherit}
+.k{color:var(--kw)}.s{color:var(--str)}.c{color:var(--cm)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.tip{border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);padding:8px 14px;margin:12px 0;max-width:80ch}
+.task{border:1px dashed var(--line);padding:8px 14px;margin:12px 0;border-radius:4px}
+footer{color:var(--mute);font-size:14px;padding:6px 0 30px}
+a{color:var(--accent)}
+@media (max-width:820px){.wrap{grid-template-columns:1fr}nav{position:static;max-height:none;display:flex;flex-wrap:wrap;gap:4px}nav b{width:100%}nav a{border:1px solid var(--line);border-radius:4px}}
+
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:9}
+#tg{position:fixed;right:14px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:9;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;padding:5px 10px;cursor:pointer}
+section>header{cursor:pointer;user-select:none}
+section>header:after{content:"\25BE";margin-left:auto;transition:transform .2s}
+section.off>header:after{transform:rotate(-90deg)}
+section.off>.body{display:none}
+nav a.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+pre{position:relative}
+.cp{position:absolute;top:6px;right:6px;font:12px "Segoe UI",sans-serif;background:#2a3350;color:#e6eaf5;border:0;border-radius:3px;padding:3px 8px;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,#tg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.win{border:1px solid #6b7690;border-radius:4px;overflow:hidden;background:#f0f0f0;color:#111;align-self:start}
+.wt{background:#2b5cab;color:#fff;padding:5px 10px;font-size:13px}
+.wb{padding:12px;display:grid;gap:9px;font-size:14px}
+.wb input[type=text],.wb select{width:100%;padding:4px;border:1px solid #888;background:#fff;color:#111}
+.wb button{padding:5px 10px;border:1px solid #777;background:#e1e1e1;color:#111;cursor:pointer}
+.wb button:disabled{opacity:.5;cursor:not-allowed}
+#lLbl{min-height:1.4em;font-weight:600}
+.log pre{min-height:150px;max-height:230px;overflow:auto;margin:6px 0;font-size:12px}
+.ins{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font-size:14px}
+.ins input[type=text]{padding:4px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.q{margin:12px 0}.q button{display:block;width:100%;max-width:520px;text-align:left;margin:4px 0;padding:7px 10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px;cursor:pointer}
+.q button.ok{background:#1e7a3c;color:#fff;border-color:#1e7a3c}.q button.no{background:#b3261e;color:#fff;border-color:#b3261e}
+@media (max-width:820px){.lab{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+main section>header{background:linear-gradient(90deg,var(--c,#0b57d0),color-mix(in srgb,var(--c,#0b57d0) 55%,#000))}
+main section{border-top:4px solid var(--c,#0b57d0)}
+main section h3{color:color-mix(in srgb,var(--c,#0b57d0) 65%,var(--ink))}
+main section th{background:color-mix(in srgb,var(--c,#0b57d0) 16%,transparent)}
+main section .tip{border-left-color:var(--c,#0b57d0);background:color-mix(in srgb,var(--c,#0b57d0) 10%,transparent)}
+main section .task{border-color:var(--c,#0b57d0);background:color-mix(in srgb,var(--c,#0b57d0) 6%,transparent)}
+.fa{fill:var(--c)}.fs{fill:#fff;stroke:var(--c);stroke-width:2}.fl{fill:none;stroke:var(--c);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.fig{float:right;width:150px;margin:10px 0 8px 16px;transition:transform .3s}
+.fig:hover{transform:rotate(-3deg) scale(1.08)}
+.fig svg{width:100%;height:auto;background:color-mix(in srgb,var(--c) 12%,var(--panel));border-radius:8px;padding:6px;display:block}
+.body>pre,.body>table,.body>.lab,.body>.ins,.body>.tbl{clear:both}
+.hero{display:grid;grid-template-columns:1fr 250px;gap:20px;align-items:center;background:linear-gradient(135deg,#0b57d0,#7b3fe4 55%,#e0457b);color:#fff;border-radius:12px;padding:24px;margin-bottom:18px}
+.hero h1{color:#fff;margin:0 0 6px}.hero .lead{color:#eef0ff;margin:0}
+.hv svg{width:100%;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.35))}
+.pb{animation:pg 3s ease-in-out infinite alternate}
+@keyframes pg{from{width:20px}to{width:92px}}
+#exp{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin:0 0 20px}
+#exp button.t{border:1px solid var(--line);border-top:4px solid var(--c);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px;cursor:pointer;font:600 13px "Segoe UI",sans-serif;transition:transform .2s,box-shadow .2s}
+#exp button.t:hover,#exp button.t.on{transform:translateY(-4px);box-shadow:0 8px 16px color-mix(in srgb,var(--c) 40%,transparent)}
+#exp button.t.on{background:color-mix(in srgb,var(--c) 14%,var(--panel))}
+#exp svg{width:100%;height:auto;display:block}
+#xi{grid-column:1/-1;padding:10px 14px;border-radius:8px;background:color-mix(in srgb,var(--c,#0b57d0) 12%,var(--panel));border:1px solid var(--line);min-height:3em}
+@media (max-width:820px){.hero{grid-template-columns:1fr}.hv{max-width:260px}.fig{float:none;width:120px;margin:10px 0}}
+@media (prefers-reduced-motion:reduce){.pb{animation:none;width:60px}.fig,#exp button.t{transition:none}}
+</style>
+</head>
+<body>
+<div id="bar"></div><button id="tg" aria-label="Cambiar tema">Tema</button>
+<div class="wrap">
+<nav aria-label="Contenido">
+<b>Contenido</b>
+<a href="#inicio">1. Primer proyecto</a>
+<a href="#form">2. Form</a>
+<a href="#label">3. Label y Button</a>
+<a href="#texto">4. TextBox</a>
+<a href="#opciones">5. CheckBox y RadioButton</a>
+<a href="#listas">6. ComboBox y ListBox</a>
+<a href="#valores">7. Numéricos y fechas</a>
+<a href="#layout">8. Contenedores y layout</a>
+<a href="#eventos">9. Eventos</a>
+<a href="#lab">Laboratorio en vivo</a>
+<a href="#quiz">Autoevaluación</a>
+<a href="#dialogos">10. Diálogos</a>
+<a href="#menus">11. Menú y estado</a>
+<a href="#grid">12. DataGridView</a>
+<a href="#ejemplo">13. Ejemplo completo</a>
+<a href="#buenas">14. Buenas prácticas</a>
+<a href="#fuentes">Fuentes</a>
+</nav>
+<main>
+<div class="hero"><div class="hl"><h1>Windows Forms con C#: controles básicos</h1>
+<p class="lead">Guía de clase para aprender a construir aplicaciones de escritorio con .NET. Cada tema explica el concepto, muestra código listo para copiar y propone una práctica corta.</p></div><div class="hv" aria-hidden="true"><svg viewBox="0 0 240 170"><defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#2b5cab"/><stop offset="1" stop-color="#7b3fe4"/></linearGradient></defs><rect x="10" y="10" width="220" height="150" rx="8" fill="#f6f7fb"/><path d="M10 18a8 8 0 018-8h204a8 8 0 018 8v14H10z" fill="url(#g1)"/><circle cx="26" cy="21" r="4" fill="#ff6b6b"/><circle cx="40" cy="21" r="4" fill="#ffd166"/><circle cx="54" cy="21" r="4" fill="#06d6a0"/><rect x="24" y="46" width="120" height="22" rx="4" fill="#fff" stroke="#0b57d0" stroke-width="2"/><rect x="152" y="46" width="64" height="22" rx="11" fill="#e0457b"/><rect x="24" y="80" width="16" height="16" rx="3" fill="#1a7f4b"/><path d="M28 88l4 4 6-8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="48" y="85" width="70" height="6" rx="3" fill="#cfd4e0"/><rect x="24" y="106" width="120" height="22" rx="4" fill="#fff" stroke="#c2570c" stroke-width="2"/><path d="M126 114l6 6 6-6" stroke="#c2570c" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="24" y="140" width="190" height="10" rx="5" fill="#e3e6f0"/><rect class="pb" x="24" y="140" width="60" height="10" rx="5" fill="#06d6a0"/></svg></div></div><div id="exp"></div>
+
+<section id="inicio"><header><h2>1. Tu primer proyecto</h2></header><div class="body">
+<p>Windows Forms (WinForms) es el framework de interfaz gráfica para escritorio en Windows. Una <b>form</b> es la superficie visual donde se muestra información; se construye agregando <b>controles</b> y programando la respuesta a acciones del usuario, como clics o teclas. Se puede arrastrar y soltar desde el diseñador de Visual Studio, o crear todo por código.</p>
+<h3>Crear el proyecto</h3>
+<p>En Visual Studio: <i>Crear un proyecto → Aplicación de Windows Forms (C#)</i>. También con la CLI:</p>
+<pre><code>dotnet new winforms -n MiPrimeraApp
+cd MiPrimeraApp
+dotnet run</code></pre>
+<h3>Estructura</h3>
+<table><tr><th>Archivo</th><th>Para qué sirve</th></tr>
+<tr><td><code>Program.cs</code></td><td>Punto de entrada. Configura la aplicación y abre la primera form.</td></tr>
+<tr><td><code>Form1.cs</code></td><td>Tu código: eventos y lógica.</td></tr>
+<tr><td><code>Form1.Designer.cs</code></td><td>Código generado por el diseñador (clase <code>partial</code>). No lo edites a mano.</td></tr></table>
+<pre><code><span class="k">static class</span> Program
+{
+    [STAThread]
+    <span class="k">static void</span> Main()
+    {
+        ApplicationConfiguration.Initialize();
+        Application.Run(<span class="k">new</span> Form1());
+    }
+}</code></pre>
+<div class="tip">Todos los controles heredan de <code>System.Windows.Forms.Control</code>, que aporta posición, tamaño, color, fuente, foco y más de 60 eventos. Lo que aprendas de un control aplica a los demás.</div>
+</div></section>
+
+<section id="form"><header><h2>2. Form: la ventana</h2></header><div class="body">
+<table><tr><th>Propiedad</th><th>Función</th></tr>
+<tr><td><code>Text</code></td><td>Título de la ventana.</td></tr>
+<tr><td><code>Size</code>, <code>MinimumSize</code></td><td>Tamaño actual y mínimo.</td></tr>
+<tr><td><code>StartPosition</code></td><td><code>CenterScreen</code>, <code>WindowsDefaultLocation</code>…</td></tr>
+<tr><td><code>FormBorderStyle</code></td><td><code>Sizable</code>, <code>FixedDialog</code>, <code>None</code>…</td></tr>
+<tr><td><code>AcceptButton</code> / <code>CancelButton</code></td><td>Botón que responde a Enter / Esc.</td></tr></table>
+<pre><code><span class="k">public</span> Form1()
+{
+    InitializeComponent();
+    Text = <span class="s">"Mi primera app"</span>;
+    StartPosition = FormStartPosition.CenterScreen;
+    MinimumSize = <span class="k">new</span> Size(400, 300);
+}
+
+<span class="k">private void</span> Form1_Load(<span class="k">object</span> sender, EventArgs e) { <span class="c">/* se ejecuta antes de mostrarse */</span> }</code></pre>
+<p>Para abrir otra ventana: <code>new Form2().Show()</code> (no bloquea) o <code>ShowDialog()</code> (modal: bloquea hasta cerrarla).</p>
+</div></section>
+
+<section id="label"><header><h2>3. Label y Button</h2></header><div class="body">
+<p><b>Label</b> muestra texto que el usuario no edita. <b>Button</b> ejecuta una acción al hacer clic. Una Label no recibe foco ni eventos de teclado.</p>
+<pre><code><span class="k">private void</span> btnSaludar_Click(<span class="k">object</span> sender, EventArgs e)
+{
+    lblResultado.Text = <span class="s">"¡Hola, mundo!"</span>;
+    btnSaludar.Enabled = <span class="k">false</span>;
+}</code></pre>
+<div class="task"><b>Práctica:</b> una Label y un Button que cambian el texto al hacer clic. Después, que el botón cuente cuántos clics lleva.</div>
+</div></section>
+
+<section id="texto"><header><h2>4. TextBox</h2></header><div class="body">
+<table><tr><th>Propiedad</th><th>Uso</th></tr>
+<tr><td><code>Text</code></td><td>Contenido escrito.</td></tr>
+<tr><td><code>Multiline</code>, <code>ScrollBars</code></td><td>Texto de varias líneas.</td></tr>
+<tr><td><code>PasswordChar</code> / <code>UseSystemPasswordChar</code></td><td>Ocultar contraseñas.</td></tr>
+<tr><td><code>MaxLength</code>, <code>ReadOnly</code></td><td>Limitar o bloquear la edición.</td></tr>
+<tr><td><code>PlaceholderText</code></td><td>Texto de ayuda cuando está vacío.</td></tr></table>
+<pre><code><span class="k">private void</span> btnSumar_Click(<span class="k">object</span> sender, EventArgs e)
+{
+    <span class="k">if</span> (<span class="k">int</span>.TryParse(txtA.Text, <span class="k">out int</span> a) &amp;&amp; <span class="k">int</span>.TryParse(txtB.Text, <span class="k">out int</span> b))
+        lblResultado.Text = (a + b).ToString();
+    <span class="k">else</span>
+        MessageBox.Show(<span class="s">"Escribe números válidos."</span>);
+}</code></pre>
+<div class="tip">Usa siempre <code>TryParse</code> en lugar de <code>Parse</code>: el usuario escribirá cosas inesperadas y una excepción cerraría tu aplicación.</div>
+</div></section>
+
+<section id="opciones"><header><h2>5. CheckBox, RadioButton y GroupBox</h2></header><div class="body">
+<p><b>CheckBox</b>: opción independiente (sí/no). <b>RadioButton</b>: una sola opción dentro de un grupo; los botones del mismo contenedor son excluyentes, por eso se agrupan en un <b>GroupBox</b> o <b>Panel</b>.</p>
+<pre><code><span class="k">private void</span> btnConfirmar_Click(<span class="k">object</span> sender, EventArgs e)
+{
+    <span class="k">string</span> turno = rbMatutino.Checked ? <span class="s">"Matutino"</span> : <span class="s">"Vespertino"</span>;
+    <span class="k">string</span> beca  = chkBeca.Checked ? <span class="s">"con beca"</span> : <span class="s">"sin beca"</span>;
+    MessageBox.Show($<span class="s">"{turno}, {beca}"</span>);
+}</code></pre>
+<p>Evento útil: <code>CheckedChanged</code>, que se dispara al cambiar el estado.</p>
+</div></section>
+
+<section id="listas"><header><h2>6. ComboBox y ListBox</h2></header><div class="body">
+<pre><code><span class="c">// ComboBox: lista desplegable</span>
+cboCarrera.DropDownStyle = ComboBoxStyle.DropDownList; <span class="c">// no permite escribir</span>
+cboCarrera.Items.AddRange(<span class="k">new object</span>[] { <span class="s">"Sistemas"</span>, <span class="s">"Industrial"</span>, <span class="s">"Civil"</span> });
+cboCarrera.SelectedIndex = 0;
+
+<span class="c">// ListBox: lista visible</span>
+lstAlumnos.Items.Add(<span class="s">"Ana"</span>);
+<span class="k">if</span> (lstAlumnos.SelectedIndex &gt;= 0)
+    lstAlumnos.Items.RemoveAt(lstAlumnos.SelectedIndex);
+
+<span class="k">string</span> elegido = cboCarrera.SelectedItem?.ToString() ?? <span class="s">""</span>;</code></pre>
+<p>Evento principal: <code>SelectedIndexChanged</code>. Para listas de objetos propios, asigna <code>DataSource</code> y define <code>DisplayMember</code>.</p>
+</div></section>
+
+<section id="valores"><header><h2>7. NumericUpDown, DateTimePicker y más</h2></header><div class="body">
+<table><tr><th>Control</th><th>Uso</th><th>Propiedad clave</th></tr>
+<tr><td>NumericUpDown</td><td>Número con rango y flechas</td><td><code>Value</code>, <code>Minimum</code>, <code>Maximum</code></td></tr>
+<tr><td>DateTimePicker</td><td>Elegir fecha u hora</td><td><code>Value</code>, <code>Format</code></td></tr>
+<tr><td>ProgressBar</td><td>Avance de una tarea</td><td><code>Value</code>, <code>Maximum</code></td></tr>
+<tr><td>PictureBox</td><td>Mostrar imagen</td><td><code>Image</code>, <code>SizeMode</code></td></tr>
+<tr><td>ToolTip</td><td>Ayuda al pasar el mouse</td><td><code>SetToolTip(control, texto)</code></td></tr></table>
+<pre><code><span class="k">int</span> edad = (<span class="k">int</span>)nudEdad.Value;
+DateTime fecha = dtpNacimiento.Value.Date;
+toolTip1.SetToolTip(btnGuardar, <span class="s">"Guarda el registro"</span>);</code></pre>
+</div></section>
+
+<section id="layout"><header><h2>8. Contenedores y layout</h2></header><div class="body">
+<p>Colocar controles con píxeles fijos se rompe al cambiar el tamaño de la ventana o la escala de pantalla. Usa estas herramientas:</p>
+<table><tr><th>Herramienta</th><th>Qué hace</th></tr>
+<tr><td><code>Anchor</code></td><td>Mantiene la distancia a los bordes indicados (<code>Top | Right</code>…).</td></tr>
+<tr><td><code>Dock</code></td><td>Pega el control a un borde o lo rellena (<code>Fill</code>).</td></tr>
+<tr><td>Panel</td><td>Agrupa controles; puede tener barras de desplazamiento (<code>AutoScroll</code>).</td></tr>
+<tr><td>GroupBox</td><td>Agrupa con título visible; no tiene scroll.</td></tr>
+<tr><td>FlowLayoutPanel</td><td>Acomoda controles en fila o columna automáticamente.</td></tr>
+<tr><td>TableLayoutPanel</td><td>Acomoda controles en una cuadrícula de filas y columnas.</td></tr></table>
+<pre><code>txtNombre.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+dgvDatos.Dock = DockStyle.Fill;
+flowPanel.FlowDirection = FlowDirection.TopDown;</code></pre>
+<div class="tip">Regla práctica: <code>TableLayoutPanel</code> para el esqueleto de la pantalla, <code>Dock</code> para áreas grandes y <code>Anchor</code> para ajustes finos.</div>
+</div></section>
+
+<section id="eventos"><header><h2>9. Eventos: cómo reacciona la interfaz</h2></header><div class="body">
+<p>Un evento es un aviso que el control emite cuando algo ocurre; tú escribes un <i>manejador</i> que responde. Los controles comparten eventos de mouse (<code>Click</code>, <code>MouseEnter</code>, <code>MouseMove</code>…), de teclado (<code>KeyDown</code>, <code>KeyPress</code>) y de cambio de propiedad.</p>
+<pre><code><span class="c">// Suscripción por código (el diseñador hace lo mismo)</span>
+btnGuardar.Click += btnGuardar_Click;
+
+<span class="c">// Solo permitir dígitos en un TextBox</span>
+<span class="k">private void</span> txtEdad_KeyPress(<span class="k">object</span> sender, KeyPressEventArgs e)
+{
+    <span class="k">if</span> (!<span class="k">char</span>.IsControl(e.KeyChar) &amp;&amp; !<span class="k">char</span>.IsDigit(e.KeyChar))
+        e.Handled = <span class="k">true</span>; <span class="c">// descarta la tecla</span>
+}</code></pre>
+<p>El parámetro <code>sender</code> es el control que originó el evento; <code>e</code> trae datos específicos. Un mismo manejador puede atender varios controles.</p>
+</div></section>
+
+<section id="lab"><header><h2>Laboratorio interactivo: eventos en vivo</h2></header><div class="body">
+<p>Interactúa con esta ventana simulada. A la derecha verás el manejador de evento de C# que se ejecutaría en una aplicación real.</p>
+<div class="lab"><div class="win"><div class="wt">Form1</div><div class="wb">
+<input type="text" id="lTxt" placeholder="txtNombre" aria-label="txtNombre">
+<label><input type="checkbox" id="lChk"> chkBeca</label>
+<div><label><input type="radio" name="t" value="Matutino" checked> rbMatutino</label> &nbsp;<label><input type="radio" name="t" value="Vespertino"> rbVespertino</label></div>
+<select id="lCbo" aria-label="cboCarrera"><option>Sistemas</option><option>Industrial</option><option>Civil</option></select>
+<button id="lBtn">btnGuardar</button><div id="lLbl">lblResultado</div></div></div>
+<div class="log"><b>Eventos disparados</b><pre id="log">Esperando acciones...</pre><button id="clr" class="cp" style="position:static">Limpiar</button></div></div>
+<div class="ins"><b>Inspector de btnGuardar:</b> Text <input type="text" id="iTxt" value="btnGuardar" aria-label="Text"> <label><input type="checkbox" id="iEn" checked> Enabled</label> <code id="iCode">btnGuardar.Text = "btnGuardar";</code></div>
+</div></section>
+
+<section id="quiz"><header><h2>Autoevaluación</h2></header><div class="body"><div id="qz"></div><p id="sc"></p></div></section>
+
+<section id="dialogos"><header><h2>10. MessageBox y diálogos estándar</h2></header><div class="body">
+<pre><code>DialogResult r = MessageBox.Show(<span class="s">"¿Eliminar el registro?"</span>, <span class="s">"Confirmar"</span>,
+    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+<span class="k">if</span> (r == DialogResult.Yes) { <span class="c">/* eliminar */</span> }
+
+<span class="k">using var</span> dlg = <span class="k">new</span> OpenFileDialog { Filter = <span class="s">"Texto|*.txt"</span> };
+<span class="k">if</span> (dlg.ShowDialog() == DialogResult.OK)
+    txtContenido.Text = File.ReadAllText(dlg.FileName);</code></pre>
+<p>Otros diálogos listos para usar: <code>SaveFileDialog</code>, <code>FolderBrowserDialog</code>, <code>ColorDialog</code>, <code>FontDialog</code>.</p>
+</div></section>
+
+<section id="menus"><header><h2>11. MenuStrip, ToolStrip y StatusStrip</h2></header><div class="body">
+<p><b>MenuStrip</b> es la barra de menús, <b>ToolStrip</b> la barra de herramientas y <b>StatusStrip</b> la barra de estado inferior. Se editan visualmente en el diseñador; cada elemento es un <code>ToolStripMenuItem</code> con su evento <code>Click</code>.</p>
+<pre><code><span class="k">private void</span> salirToolStripMenuItem_Click(<span class="k">object</span> sender, EventArgs e) =&gt; Close();
+
+tsslEstado.Text = <span class="s">"Listo"</span>; <span class="c">// ToolStripStatusLabel dentro del StatusStrip</span></code></pre>
+</div></section>
+
+<section id="grid"><header><h2>12. DataGridView: tablas de datos</h2></header><div class="body">
+<pre><code><span class="k">record</span> Alumno(<span class="k">string</span> Nombre, <span class="k">int</span> Calificacion);
+
+<span class="k">var</span> datos = <span class="k">new</span> BindingList&lt;Alumno&gt;
+{
+    <span class="k">new</span>(<span class="s">"Ana"</span>, 95), <span class="k">new</span>(<span class="s">"Luis"</span>, 88)
+};
+dgvAlumnos.DataSource = datos;
+dgvAlumnos.ReadOnly = <span class="k">true</span>;
+dgvAlumnos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;</code></pre>
+<p><code>BindingList&lt;T&gt;</code> actualiza la tabla automáticamente al agregar o quitar elementos. Necesitas <code>using System.ComponentModel;</code>.</p>
+</div></section>
+
+<section id="ejemplo"><header><h2>13. Ejemplo completo: registro de alumnos</h2></header><div class="body">
+<p>Crea esta interfaz solo por código para entender qué hace el diseñador. Pega el código en <code>Form1.cs</code> y deja <code>Program.cs</code> como está.</p>
+<pre><code><span class="k">public partial class</span> Form1 : Form
+{
+    <span class="k">readonly</span> TextBox txtNombre = <span class="k">new</span>() { PlaceholderText = <span class="s">"Nombre"</span>, Dock = DockStyle.Top };
+    <span class="k">readonly</span> ComboBox cboCarrera = <span class="k">new</span>() { DropDownStyle = ComboBoxStyle.DropDownList, Dock = DockStyle.Top };
+    <span class="k">readonly</span> Button btnAgregar = <span class="k">new</span>() { Text = <span class="s">"Agregar"</span>, Dock = DockStyle.Top };
+    <span class="k">readonly</span> ListBox lstAlumnos = <span class="k">new</span>() { Dock = DockStyle.Fill };
+
+    <span class="k">public</span> Form1()
+    {
+        Text = <span class="s">"Registro"</span>;
+        Size = <span class="k">new</span> Size(360, 380);
+        cboCarrera.Items.AddRange(<span class="k">new object</span>[] { <span class="s">"Sistemas"</span>, <span class="s">"Industrial"</span> });
+        cboCarrera.SelectedIndex = 0;
+        btnAgregar.Click += Agregar;
+        <span class="c">// Dock se apila al revés: el último agregado queda arriba</span>
+        Controls.AddRange(<span class="k">new</span> Control[] { lstAlumnos, btnAgregar, cboCarrera, txtNombre });
+    }
+
+    <span class="k">void</span> Agregar(<span class="k">object</span>? s, EventArgs e)
+    {
+        <span class="k">if</span> (<span class="k">string</span>.IsNullOrWhiteSpace(txtNombre.Text))
+        {
+            MessageBox.Show(<span class="s">"Escribe un nombre."</span>);
+            <span class="k">return</span>;
+        }
+        lstAlumnos.Items.Add($<span class="s">"{txtNombre.Text} - {cboCarrera.Text}"</span>);
+        txtNombre.Clear();
+        txtNombre.Focus();
+    }
+}</code></pre>
+<div class="task"><b>Retos:</b> validar que no haya nombres repetidos; agregar un botón para eliminar el elemento seleccionado; guardar la lista en un archivo con <code>SaveFileDialog</code>.</div>
+</div></section>
+
+<section id="buenas"><header><h2>14. Buenas prácticas</h2></header><div class="body">
+<ul>
+<li><b>Nombra los controles</b> con prefijo y significado: <code>txtNombre</code>, <code>btnGuardar</code>, <code>cboCarrera</code>. Evita <code>textBox1</code>.</li>
+<li><b>Separa la lógica</b> de la interfaz: pon cálculos y reglas en clases aparte y deja los eventos solo para coordinar.</li>
+<li><b>Valida la entrada</b> antes de usarla (<code>TryParse</code>, <code>IsNullOrWhiteSpace</code>).</li>
+<li><b>No bloquees la interfaz</b>: para tareas largas usa <code>async/await</code>; una operación pesada en un evento congela la ventana.</li>
+<li><b>Liberar recursos</b>: usa <code>using</code> con diálogos, archivos y conexiones.</li>
+<li><b>Diseña para escalar</b>: <code>Dock</code>, <code>Anchor</code> y <code>TableLayoutPanel</code> en lugar de posiciones fijas.</li>
+<li><b>Accesibilidad</b>: define <code>TabIndex</code> coherente, atajos con <code>&amp;</code> en el texto (<code>"&amp;Guardar"</code>) y <code>AcceptButton</code>.</li>
+</ul>
+</div></section>
+
+<section id="fuentes"><header><h2>Fuentes y para profundizar</h2></header><div class="body">
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/desktop/winforms/overview/">Windows Forms Overview (Microsoft Learn)</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/overview">Overview of using controls</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/controls-to-use-on-windows-forms">Controls to use on Windows Forms</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/events">Control events</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/panel-control-overview-windows-forms">Panel vs GroupBox</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls-design/overview">Crear controles personalizados (UserControl)</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control?view=windowsdesktop-10.0">Referencia de la clase Control (.NET 10)</a></li>
+</ul>
+</div></section>
+<footer>Los ejemplos de código están pensados para .NET moderno (6 o superior) con C# 10+. Verifica nombres de propiedades en la referencia oficial si usas otra versión.</footer>
+</main>
+</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},root=document.documentElement;
+function sg(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function ss(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+var th=sg('th');if(th)root.dataset.theme=th;
+$('tg').onclick=function(){var d=(root.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'))==='dark'?'light':'dark';root.dataset.theme=d;ss('th',d)};
+document.querySelectorAll('section>header').forEach(function(h){h.onclick=function(){h.parentNode.classList.toggle('off')}});
+document.querySelectorAll('pre').forEach(function(p){if(p.id==='log')return;var b=document.createElement('button');b.className='cp';b.textContent='Copiar';b.onclick=function(){var t=p.querySelector('code')?p.querySelector('code').innerText:'';(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='Copiado'},function(){b.textContent='No se pudo'});setTimeout(function(){b.textContent='Copiar'},1500)};p.appendChild(b)});
+addEventListener('scroll',function(){var h=root.scrollHeight-innerHeight;$('bar').style.width=(h>0?scrollY/h*100:0)+'%'});
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){document.querySelectorAll('nav a').forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-20% 0px -70% 0px'});document.querySelectorAll('main section').forEach(function(x){io.observe(x)})}
+var lg=$('log'),first=true;
+function L(n,ev){if(first){lg.textContent='';first=false}lg.textContent=n+'_'+ev+'(object sender, EventArgs e)\n'+lg.textContent}
+var tx=$('lTxt'),lb=$('lLbl'),bt=$('lBtn');
+tx.oninput=function(){L('txtNombre','TextChanged')};
+$('lChk').onchange=function(){L('chkBeca','CheckedChanged')};
+document.querySelectorAll('input[name=t]').forEach(function(r){r.onchange=function(){L(r.value==='Matutino'?'rbMatutino':'rbVespertino','CheckedChanged')}});
+$('lCbo').onchange=function(){L('cboCarrera','SelectedIndexChanged')};
+bt.onclick=function(){L('btnGuardar','Click');var t=document.querySelector('input[name=t]:checked').value;lb.textContent=(tx.value||'Sin nombre')+' - '+$('lCbo').value+' - '+t+($('lChk').checked?' (con beca)':'')};
+$('clr').onclick=function(){lg.textContent='Esperando acciones...';first=true;lb.textContent='lblResultado'};
+function ins(){bt.textContent=$('iTxt').value;bt.disabled=!$('iEn').checked;$('iCode').textContent='btnGuardar.Text = "'+$('iTxt').value+'"; btnGuardar.Enabled = '+($('iEn').checked?'true':'false')+';'}
+$('iTxt').oninput=ins;$('iEn').onchange=ins;
+var Q=[['¿Qué propiedad hace que un control ocupe todo el espacio de su contenedor?',['Anchor','Dock = DockStyle.Fill','AutoSize'],1],['¿Qué método evita que tu programa se cierre si el usuario escribe letras donde va un número?',['int.Parse','Convert.ToInt32','int.TryParse'],2],['¿Qué contenedor muestra título y NO tiene barras de desplazamiento?',['GroupBox','Panel','FlowLayoutPanel'],0],['¿Qué evento se dispara al cambiar la opción seleccionada de un ComboBox?',['Click','SelectedIndexChanged','Load'],1]],ok=0,done=0;
+Q.forEach(function(q){var d=document.createElement('div');d.className='q';d.innerHTML='<b></b>';d.firstChild.textContent=q[0];var ans=false;q[1].forEach(function(o,i){var b=document.createElement('button');b.textContent=o;b.onclick=function(){if(ans)return;ans=true;done++;if(i===q[2]){b.className='ok';ok++}else{b.className='no';d.children[q[2]+1].className='ok'}$('sc').textContent='Puntaje: '+ok+' de '+Q.length+(done===Q.length?' (terminaste)':'')};d.appendChild(b)});$('qz').appendChild(d)});
+})();
+</script>
+<script>
+(function(){
+var W='<rect class="fs" x="8" y="6" width="104" height="58" rx="5"/><path class="fa" d="M8 11a5 5 0 015-5h94a5 5 0 015 5v5H8z"/>';
+var S={
+inicio:W+'<path class="fl" d="M34 34l-8 8 8 8M70 34l8 8-8 8M60 30l-6 24"/>',
+form:W+'<rect class="fa" opacity=".25" x="18" y="26" width="84" height="8" rx="2"/><rect class="fa" opacity=".25" x="18" y="40" width="50" height="8" rx="2"/>',
+label:'<rect class="fa" x="20" y="22" width="80" height="26" rx="7"/><rect fill="#fff" opacity=".85" x="40" y="32" width="40" height="6" rx="3"/>',
+texto:'<rect class="fs" x="14" y="22" width="92" height="26" rx="3"/><path class="fl" d="M24 28v14"/><rect class="fa" opacity=".35" x="32" y="32" width="40" height="6" rx="3"/>',
+opciones:'<rect class="fs" x="14" y="12" width="18" height="18" rx="3"/><path class="fl" d="M18 21l4 4 7-9"/><circle class="fs" cx="23" cy="52" r="9"/><circle class="fa" cx="23" cy="52" r="4"/><rect class="fa" opacity=".3" x="42" y="18" width="60" height="6" rx="3"/><rect class="fa" opacity=".3" x="42" y="49" width="48" height="6" rx="3"/>',
+listas:'<rect class="fs" x="14" y="8" width="92" height="20" rx="3"/><path class="fl" d="M90 15l5 5 5-5"/><rect class="fs" x="14" y="30" width="92" height="32"/><rect class="fa" opacity=".7" x="14" y="30" width="92" height="10"/>',
+valores:'<rect class="fs" x="14" y="22" width="70" height="26" rx="3"/><rect class="fa" x="84" y="22" width="22" height="13"/><rect class="fa" opacity=".65" x="84" y="35" width="22" height="13"/><path class="fl" style="stroke:#fff;stroke-width:2" d="M91 31l4-5 4 5M91 39l4 5 4-5"/>',
+layout:'<rect class="fs" x="10" y="8" width="100" height="54" rx="3"/><path class="fl" d="M60 8v54M10 35h100"/><rect class="fa" opacity=".4" x="16" y="14" width="38" height="15"/><rect class="fa" x="66" y="41" width="38" height="15"/>',
+eventos:'<path class="fa" d="M64 4L34 40h22l-6 26 34-40H66z"/>',
+lab:'<path class="fs" d="M48 6h24v20l22 34H26l22-34z"/><path class="fa" opacity=".75" d="M36 46h48l10 14H26z"/>',
+quiz:'<circle class="fs" cx="60" cy="35" r="27"/><path class="fl" d="M50 30a10 10 0 1120 0c0 8-10 8-10 15"/><circle class="fa" cx="60" cy="53" r="2.5"/>',
+dialogos:W+'<rect class="fa" opacity=".25" x="20" y="24" width="80" height="8" rx="2"/><rect class="fa" x="24" y="44" width="30" height="12" rx="3"/><rect class="fs" x="66" y="44" width="30" height="12" rx="3"/>',
+menus:W+'<rect class="fa" opacity=".25" x="8" y="16" width="104" height="10"/><rect class="fa" x="14" y="19" width="14" height="4"/><rect class="fa" x="34" y="19" width="14" height="4"/><rect class="fa" x="8" y="54" width="104" height="10"/>',
+grid:'<rect class="fs" x="10" y="8" width="100" height="54"/><rect class="fa" x="10" y="8" width="100" height="12"/><path class="fl" d="M10 34h100M10 48h100M43 20v42M76 20v42"/>',
+ejemplo:'<rect class="fs" x="10" y="8" width="100" height="54" rx="4"/><path class="fl" d="M42 24l-12 11 12 11M78 24l12 11-12 11M68 20l-16 30"/>',
+buenas:'<circle class="fs" cx="60" cy="35" r="27"/><path class="fl" d="M46 36l10 10 20-22"/>',
+fuentes:'<path class="fs" d="M14 12h42v46H14zM64 12h42v46H64z"/><path class="fl" d="M22 24h26M22 34h26M72 24h26M72 34h26"/>'
+};
+var C=['#0b57d0','#6a3fd1','#d6336c','#c2570c','#1a7f4b','#0e7490','#9333ea','#b45309','#be185d','#0f766e','#4338ca','#a21caf','#15803d','#b91c1c','#1d4ed8','#7c3aed','#047857'];
+var col={};
+function svg(id){return '<svg viewBox="0 0 120 70" aria-hidden="true">'+(S[id]||'')+'</svg>'}
+document.querySelectorAll('main section').forEach(function(sec,i){
+ var c=C[i%C.length];col[sec.id]=c;sec.style.setProperty('--c',c);
+ var b=sec.querySelector('.body');if(b&&S[sec.id]){var f=document.createElement('figure');f.className='fig';f.style.margin='';f.innerHTML=svg(sec.id);b.insertBefore(f,b.firstChild)}
+ var a=document.querySelector('nav a[href="#'+sec.id+'"]');if(a)a.style.borderLeftColor=c;
+});
+var T=[['label','Button','Ejecuta una acción con el evento Click.'],['texto','TextBox','Captura texto del usuario; valida con TryParse.'],['opciones','CheckBox y RadioButton','Opciones sí/no o excluyentes dentro de un grupo.'],['listas','ComboBox y ListBox','Elegir elementos de una lista.'],['valores','NumericUpDown','Números con rango, fechas, progreso e imágenes.'],['layout','Layout','Dock, Anchor, Panel y TableLayoutPanel.'],['menus','Menús','MenuStrip, ToolStrip y StatusStrip.'],['grid','DataGridView','Tablas de datos enlazadas a listas.']];
+var ex=document.getElementById('exp'),xi=document.createElement('div');xi.id='xi';xi.textContent='Toca un control para ver qué hace y saltar a su lección.';
+T.forEach(function(t){var b=document.createElement('button');b.className='t';b.style.setProperty('--c',col[t[0]]);b.innerHTML=svg(t[0])+'<span>'+t[1]+'</span>';
+ b.onclick=function(){ex.querySelectorAll('.t').forEach(function(x){x.classList.remove('on')});b.classList.add('on');xi.style.setProperty('--c',col[t[0]]);xi.innerHTML='<b>'+t[1]+'</b>: '+t[2]+' <a href="#'+t[0]+'">Ir a la lección</a>'};ex.appendChild(b)});
+ex.appendChild(xi);
+})();
+</script>
+</body>
+</html>
